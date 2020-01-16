@@ -6,3 +6,6 @@ main.bbl
 main.blg
 main-blx.bib
 main.pdf
+
+.DS_Store
+precooked_runs/uncompressed
