@@ -47,15 +47,115 @@ Tracer is used for assessing and summarizing the posterior estimates of the vari
 
 ## Setting up the XML file
 
-### Install the required package
+### Package installation
 
-### Import the alignment
+The first step is to install the MSBD package, which will allow us to set up and run an analysis with lineage-specific birth and death rates.
 
-### Import the tree
+> Open the **BEAST2 Package Manager** by navigating to **File > Manage Packages**. ([Figure 1](#packageManage1))
+> 
+
+<figure>
+	<a id="packageManage1"></a>
+	<img style="width:75.0%;" src="figures/package_manager.png" alt="">
+	<figcaption>Figure 1: Finding the BEAST2 Package Manager.</figcaption>
+</figure>
+<br>
+
+
+> Install the **MSBD** package by selecting it and clicking the **Install/Upgrade** button. ([Figure 2](#packageManage2))
+> 
+
+<figure>
+	<a id="packageManage2"></a>
+	<img style="width:65.0%;" src="figures/packageMSBD.png" alt="">
+	<figcaption>Figure 2: The BEAST2 Package Manager.</figcaption>
+</figure>
+<br>
+
+
+BEAUti needs to be restarted for the newly installed package to be loaded properly.
+
+> Close the **BEAST2 Package Manager** and **_restart_** BEAUti to fully load the **MSBD** package.
+> 
+
+### Setting the templates
+
+BEAUti uses templates to define specific model configurations. The MSBD template needs to be selected to set up an analysis using the MSBD model.
+
+> Select the **MSBD template** by navigating to **File > Template**. ([Figure 3](#template))
+> 
+
+<figure>
+	<a id="template"></a>
+	<img style="width:75.0%;" src="figures/template.png" alt="">
+	<figcaption>Figure 3: Selecting the MSBD template.</figcaption>
+</figure>
+<br>
+
+### Importing the alignment
+
+This analysis will be run with a fixed tree topology, however BEAUti requires an alignment to be loaded in order to set the other components of the model. As a result, we will load a dummy alignment, which is just the sequence "A" for all taxa.
+
+> In the **Partitions** panel, import the alignment by navigating to **File > Import Alignment** in the menu ([Figure 4](#importAlignment)) and then finding the `hummingbirds.nex` file on your computer **or** simply drag and drop the file into the **BEAUti** window.
+> 
+
+<figure>
+	<a id="importAlignment"></a>
+	<img style="width:75.0%;" src="figures/alignment.png" alt="">
+	<figcaption>Figure 4: Importing the alignment into BEAUti.</figcaption>
+</figure>
+<br>
+
+
+### Importing the tree
+
+As mentioned earlier, we want to run this analysis with a fixed tree topology. By default BEAUti generates a random starting tree compatible with the alignment, so we need to change this to our fixed tree.
+
+> In the **Tree** panel, set the dropdown to **Tree From Newick**.
+> Copy-paste the Newick tree found in the `hummingbirds.MCC.tre` file into the **Newick** field.
+> Uncheck the **Estimate Topology** checkbox.
+>
+
+The final tree configuration is shown in [Figure 5](#importTree).
+
+<figure>
+	<a id="importTree"></a>
+	<img style="width:75.0%;" src="figures/tree.png" alt="">
+	<figcaption>Figure 5: Importing the tree into BEAUti.</figcaption>
+</figure>
+<br>
+
+### The parameter priors
+
+The next step is to look at the parameter priors, in the **Priors** panel. The default priors on the birth rates ({% eqinline \lambda %}), death rates ({% eqinline \mu %}) and total number of states ({% eqinline n* %}) are reasonable for this dataset so we will not change them.
+
+The expected average number of state changes across the entire tree is given by {% eqinline n = \gamma \times L %}, where L is the total length of the tree. The length of the fixed tree used in this analysis is {% eqinline \approx 1482 %}, so the default prior on {% eqinline \gamma %} would lead to a high expected number of state changes. From the previous analysis performed in BAMM, we expect only a few state changes across this phylogeny, so we will set the prior on {% eqinline \gamma %} to a lower range, using a **LogNormal(-4.0, 1.0)** distribution.
+
+>  Click on the arrow next to **gamma** and change the value for **M** (mean) of the default log normal distribution to -4 ([Figure 6](#gammaPrior)).
+> 
+
+<figure>
+	<a id="gammaPrior"></a>
+	<img style="width:75.0%;" src="figures/gammaprior.png" alt="">
+	<figcaption>Figure 6: Setting the prior on the state change rate.</figcaption>
+</figure>
+<br>
 
 ### The tree prior
 
-### The parameter priors
+Next, we will specify the tree prior, i.e. the MSBD model. By default most of the parameters of the model are estimated, so it is not necessary to change their starting values. However, the extant sampling proportion ({% eqinline \rho %}) and extinct sampling probability ({% eqinline \sigma %}) are fixed. There are no extinct samples in this dataset, and we have sampled 86% of the extant hummingbirds species so we will set {% eqinline \sigma = 0 %} and {% eqinline \rho = 0.86 %}.
+
+>  Click on the arrow next to **Tree** and change the value for **rho** (extant sampling proportion) of the MSBD model to 0.86 ([Figure 7](#treePrior)).
+> 
+
+<figure>
+	<a id="treePrior"></a>
+	<img style="width:75.0%;" src="figures/treeprior.png" alt="">
+	<figcaption>Figure 7: Setting the MSBD tree prior.</figcaption>
+</figure>
+<br>
+
+Note that many other options are available in this section, such as fixing the number of states or the value of some parameters (**estimate** checkboxes), setting the birth rate or the death rate to be shared between states (**identical across states** checkboxes), or setting the model to only use sampling-through-time (**To The Present** checkbox) .
 
 ### MCMC options
 
