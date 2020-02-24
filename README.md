@@ -45,7 +45,13 @@ Tracer is used for assessing and summarizing the posterior estimates of the vari
 
 ## Dataset: hummingbirds phylogeny
 
+The dataset used in this tutorial is a time-calibrated phylogeny of 284 species of hummingbirds, which was estimated by {% cite McGuire2014 --file MSBD-tutorial/master-refs.bib %}. This phylogeny was built from an alignment of 436 sequences representing six genes (four nuclear and two mitochondrial).
+
+In this tutorial, we focus on estimating the MSBD model and its parameters, and so we are going to fix this phylogeny in our analysis. However, it is also possible to co-estimate both the phylogeny and the MSBD model from an alignment in BEAST2.
+
 ## Setting up the XML file
+
+This section will demonstrate how to create an XML configuration file using BEAUti, which will then be used to run the analysis in BEAST2.
 
 ### Package installation
 
@@ -159,19 +165,64 @@ Note that many other options are available in this section, such as fixing the n
 
 ### MCMC options
 
-## Running BEAST2
+The next step is to set the options for running the chain, in the **MCMC** panel. We can see that several loggers are set by default:
+
+- the regular trace log, which in our case only records the posterior, likelihood and prior, as we are not using a substitution or clock model.
+- the screenlog, which shows the advancement of the chain to the screen
+- the tree log, which will log the trees in Nexus format, with the birth and death rate on each edge as metadata
+- the state change model log, which logs the parameters associated with the model, i.e. {% eqinline \gamma %}, {% eqinline n^* %}, the number of sampled states and the birth and death rates for each state
+- the tip rates log, which logs the birth and death rates at each tip (optionally, at each node if the **nodeLog** option is activated)
+ 
+These last three logs are specific to MSBD. The only thing we will change here is the number of states recorded in the model. By default, only the sampled states are recorded, however this results in a log that is not in table format and so cannot be easily loaded into Tracer. Fixing the number of recorded states solves this problem.
+
+>  In the **MCMC** panel, click on the arrow next to **stdStateslog** and click on the  **Edit** button to the right of the **StateChangeModelLogger** ([Figure 8](#logs)).
+> 
+
+<figure>
+	<a id="logs"></a>
+	<img style="width:75.0%;" src="figures/logs.png" alt="">
+	<figcaption>Figure 8: Opening the state change model log.</figcaption>
+</figure>
+<br>
+
+>  In the new panel, set the value of **maxStates** to 10 ([Figure 9](#logpanel)).
+>  Close the panel by clicking on **OK**.
+>
+
+<figure>
+	<a id="logs"></a>
+	<img style="width:65.0%;" src="figures/logstates.png" alt="">
+	<figcaption>Figure 9: Setting the state change model log.</figcaption>
+</figure>
+<br>
+
+Once all the options have been set, the final step is to save the XML.
+
+> Save the XML file as `hummingbirds.xml` by navigating to **File > Save**.
+> 
+
+## Running the analysis in BEAST2
+
+> Start **BEAST2** and choose the file `hummingbirds.xml`. 
+> 
+> If you have **BEAGLE** installed tick the box to **Use BEAGLE library if available**, which will make the run faster.
+>
+> Hit **Run** to start the analysis.
+> 
+
+The run should take about 15-20 minutes.
 
 ## Analyzing the output
 
 ### Output files
 
-### Log summary
+### Analyzing the log files
 
-### Tree summary
+### Analyzing the trees
 
 # Useful Links
 
-- [Bayesian Evolutionary Analysis with BEAST 2](http://www.beast2.org/book.html) {% cite BEAST2book2014 --file Tutorial-Template/master-refs.bib %}
+- [Bayesian Evolutionary Analysis with BEAST 2](http://www.beast2.org/book.html) {% cite BEAST2book2014 --file MSBD-tutorial/master-refs.bib %}
 - BEAST 2 website and documentation: [http://www.beast2.org/](http://www.beast2.org/)
 - BEAST 1 website and documentation: [http://beast.bio.ed.ac.uk](http://beast.bio.ed.ac.uk)
 - Join the BEAST user discussion: [http://groups.google.com/group/beast-users](http://groups.google.com/group/beast-users) 
@@ -185,50 +236,6 @@ Note that many other options are available in this section, such as fixing the n
 -------
 
 # Tutorial style guide
-
-## Text styling
-
-This is how to write _italic text_.
-
-This is how to write **bold text**.
-
-This is how to write **_bold and italic text_**.
-
-Do text superscripts like this 7^th, x^2y or  x^(2y + 3z).
-
-
-## Lists
-
-### Unnumbered lists
-
-- Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-- Integer pharetra arcu ut nisl mollis ultricies.
-	- Fusce nec tortor at enim cursus dictum.
-	- Phasellus nec urna quis velit eleifend convallis sodales nec augue.
-- In iaculis turpis in massa facilisis, quis ultricies nibh ultricies.
-- Nam vitae turpis eu lacus imperdiet mollis id at augue.
-- Sed sed turpis ac dolor mollis accumsan.
-
-
-### Numbered lists
-
-1. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-2. Integer pharetra arcu ut nisl mollis ultricies.
-	1. Fusce nec tortor at enim cursus dictum.
-	2. Phasellus nec urna quis velit eleifend convallis sodales nec augue.
-1. In iaculis turpis in massa facilisis, quis ultricies nibh ultricies.
-1. Nam vitae turpis eu lacus imperdiet mollis id at augue.
-1. Sed sed turpis ac dolor mollis accumsan.
-
-### Mixed lists
-
-1. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-2. Integer pharetra arcu ut nisl mollis ultricies.
-	* Fusce nec tortor at enim cursus dictum.
-	* Phasellus nec urna quis velit eleifend convallis sodales nec augue.
-1. In iaculis turpis in massa facilisis, quis ultricies nibh ultricies.
-1. Nam vitae turpis eu lacus imperdiet mollis id at augue.
-1. Sed sed turpis ac dolor mollis accumsan.
 
 
 ## Figures

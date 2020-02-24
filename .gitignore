@@ -9,3 +9,4 @@ main.pdf
 
 .DS_Store
 precooked_runs/uncompressed
+*.html
