@@ -30,10 +30,6 @@ BEAST2 is a free software package for Bayesian evolutionary analysis of molecula
 
 BEAUti is a utility program with a graphical user interface for creating BEAST2 input files, which are written in XML. The eXtensible Markup Language (XML) is a general-purpose markup language, which allows for the combination of text and additional information. The use of the XML makes analysis specification very flexible and readable by both the program and people. The XML file specifies all the components of the analysis, including sequences, node calibrations, models, priors, output file names.
 
-### LogCombiner
-
-When multiple (identical) analyses are run using BEAST2, LogCombiner can be used to combine the parameter log files or tree files into a single file that can then be analyzed or summarized using Tracer (for log files) or TreeAnnotator (for tree files). However, it is important to ensure that all analyses reached convergence and sampled the same stationary distribution before combining the parameter files.
-
 ### TreeAnnotator
 
 TreeAnnotator is used to summarize the posterior sample of trees to produce a maximum clade credibility tree and summarize the posterior estimates of other parameters that can be easily visualized on the tree (e.g. node height). This program is also useful for comparing a specific tree topology and branching times to the set of trees sampled in the MCMC analysis. 
