@@ -2,18 +2,21 @@
 author: Joëlle Barido-Sottani
 level: Intermediate
 title: The MSBD package
-subtitle: Inferring lineage-specific birth and death rates
+subtitle: Inferring lineage-dependent birth and death rates
 beastversion: 2.6.0
 ---
 
 
 # Background
 
-This is a template tutorial and style guide to help formatting Markdown tutorials. 
+This tutorial will show how to configure and run a model with lineage-dependent birth and death rates, using the BEAST2 package MSBD.
 
-Please start the tutorial by adding some background about the tutorial in this section, clearly explaining the question/problem and the type of analysis that the methods in the tutorial should be used for. In the next section please add a short description of all the programs or packages used in the tutorial. The tutorial exercise should follow this part. Please add a short explanation on the dataset used in the tutorial before starting with the exercise. Please also add a section after the exercise interpreting the results. End your tutorial with some useful links.
+The MSBD package relies on a multi-type birth death model which is composed of a number of evolutionary regimes, or types, {% eqinline n^* %}. Each type is associated with a birth rate {% eqinline \lambda_i %} and a death rate {% eqinline \mu_i %}. A lineages in type {% eqinline i %} will change to any another type {% eqinline j %} with a uniform rate {% eqinline \m_{i,j} = \frac{\gamma}{n^* - 1} %}, where {% eqinline \gamma %} is the total type change rate.
+The MSBD package is able to infer {% eqinline n^* %}, {% eqinline \gamma %} and {% eqinline \lambda_i %} and {% eqinline \mu_i %} for all types, as well as the locations of types and type changes on the tree.
 
-Some of the text in this tutorial template is just dummy filler text. Please do not try to understand it.
+More details on the model and an evaluation of its performance in various conditions can be found in the original publication {% cite MSBD2020 --file Tutorial-Template/master-refs.bib %}.
+
+You may notice similarities between MSBD and the model used in another BEAST2 package, BDMM. The main difference is that MSBD is able to infer the number of types as well as the types at the tips of the tree, whereas BDMM requires you to fix them. Thus MSBD is more appropriate if the character driving the differences in rates is unobserved or unknown. On the other hand, BDMM integrates more complex dynamics than the current implementation of MSBD: in particular, it includes asymmetrical transition rates as well as mixed birth events (where the two lineages produced by a birth event are of different types), which are not currently available in MSBD.
 
 ----
 
@@ -216,7 +219,15 @@ The run should take about 15-20 minutes.
 
 ### Output files
 
+Our run has generated 4 different files : 
+ * `hummingbirds.log` which is the general trace log
+ * `hummingbirds.hummingbirds.states.log` which recorded the parameters associated with the state model
+ * `hummingbirds.hummingbirds.rates.log` which recorded the rates on tips of the tree
+ * `hummingbirds.hummingbirds.rates.trees` which recorded the sampled trees as Nexus
+
 ### Analyzing the log files
+
+
 
 ### Analyzing the trees
 
