@@ -11,7 +11,7 @@ beastversion: 2.6.0
 
 This tutorial will show how to configure and run a model with lineage-dependent birth and death rates, using the BEAST2 package MSBD.
 
-The MSBD package relies on a multi-type birth death model which is composed of a number of evolutionary regimes, or types, {% eqinline n^* %}. Each type is associated with a birth rate {% eqinline \lambda_i %} and a death rate {% eqinline \mu_i %}. A lineages in type {% eqinline i %} will change to any another type {% eqinline j %} with a uniform rate {% eqinline \m_{i,j} = \frac{\gamma}{n^* - 1} %}, where {% eqinline \gamma %} is the total type change rate.
+The MSBD package relies on a multi-type birth death model which is composed of a number of evolutionary regimes, also called types or states, {% eqinline n^* %}. Each type is associated with a birth rate {% eqinline \lambda_i %} and a death rate {% eqinline \mu_i %}. A lineages in type {% eqinline i %} will change to any another type {% eqinline j %} with a uniform rate {% eqinline \m_{i,j} = \frac{\gamma}{n^* - 1} %}, where {% eqinline \gamma %} is the total type change rate.
 The MSBD package is able to infer {% eqinline n^* %}, {% eqinline \gamma %} and {% eqinline \lambda_i %} and {% eqinline \mu_i %} for all types, as well as the locations of types and type changes on the tree.
 
 More details on the model and an evaluation of its performance in various conditions can be found in the original publication {% cite MSBD2020 --file Tutorial-Template/master-refs.bib %}.
@@ -132,9 +132,9 @@ The final tree configuration is shown in [Figure 5](#importTree).
 
 ### The parameter priors
 
-The next step is to look at the parameter priors, in the **Priors** panel. The default priors on the birth rates ({% eqinline \lambda %}), death rates ({% eqinline \mu %}) and total number of states ({% eqinline n* %}) are reasonable for this dataset so we will not change them.
+The next step is to look at the parameter priors, in the **Priors** panel. The default priors on the birth rates ({% eqinline \lambda %}), death rates ({% eqinline \mu %}) and total number of types ({% eqinline n* %}) are reasonable for this dataset so we will not change them.
 
-The expected average number of state changes across the entire tree is given by {% eqinline n = \gamma \times L %}, where L is the total length of the tree. The length of the fixed tree used in this analysis is {% eqinline \approx 1482 %}, so the default prior on {% eqinline \gamma %} would lead to a high expected number of state changes. From the previous analysis performed in BAMM, we expect only a few state changes across this phylogeny, so we will set the prior on {% eqinline \gamma %} to a lower range, using a **LogNormal(-4.0, 1.0)** distribution.
+The expected average number of type changes across the entire tree is given by {% eqinline n = \gamma \times L %}, where L is the total length of the tree. The length of the fixed tree used in this analysis is {% eqinline \approx 1482 %}, so the default prior on {% eqinline \gamma %} would lead to a high expected number of type changes. From the previous analysis performed in BAMM, we expect only a few type changes across this phylogeny, so we will set the prior on {% eqinline \gamma %} to a lower range, using a **LogNormal(-4.0, 1.0)** distribution.
 
 >  Click on the arrow next to **gamma** and change the value for **M** (mean) of the default log normal distribution to -4 ([Figure 6](#gammaPrior)).
 > 
@@ -142,7 +142,7 @@ The expected average number of state changes across the entire tree is given by 
 <figure>
 	<a id="gammaPrior"></a>
 	<img style="width:75.0%;" src="figures/gammaprior.png" alt="">
-	<figcaption>Figure 6: Setting the prior on the state change rate.</figcaption>
+	<figcaption>Figure 6: Setting the prior on the type change rate.</figcaption>
 </figure>
 <br>
 
