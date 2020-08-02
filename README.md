@@ -11,10 +11,10 @@ beastversion: 2.6.0
 
 This tutorial will show how to configure and run a model with lineage-dependent birth and death rates, using the BEAST2 package MSBD.
 
-The MSBD package relies on a multi-type birth death model which is composed of a number of evolutionary regimes, also called types or states, {% eqinline n^* %}. Each type is associated with a birth rate {% eqinline \lambda_i %} and a death rate {% eqinline \mu_i %}. A lineages in type {% eqinline i %} will change to any another type {% eqinline j %} with a uniform rate {% eqinline \m_{i,j} = \frac{\gamma}{n^* - 1} %}, where {% eqinline \gamma %} is the total type change rate.
+The MSBD package relies on a multi-type birth death model which is composed of a number of evolutionary regimes, also called types or states, {% eqinline n^* %}. Each type is associated with a birth rate {% eqinline \lambda_i %} and a death rate {% eqinline \mu_i %}. A lineages in type {% eqinline i %} will change to any another type {% eqinline j %} with a uniform rate {% eqinline \mu_{i,j} = \frac{\gamma}{n^* - 1} %}, where {% eqinline \gamma %} is the total type change rate.
 The MSBD package is able to infer {% eqinline n^* %}, {% eqinline \gamma %} and {% eqinline \lambda_i %} and {% eqinline \mu_i %} for all types, as well as the locations of types and type changes on the tree.
 
-More details on the model and an evaluation of its performance in various conditions can be found in the original publication {% cite MSBD2020 --file Tutorial-Template/master-refs.bib %}.
+More details on the model and an evaluation of its performance in various conditions can be found in the original publication {% cite MSBD2020 --file MSBD-tutorial/master-refs.bib %}.
 
 You may notice similarities between MSBD and the model used in another BEAST2 package, BDMM. The main difference is that MSBD is able to infer the number of types as well as the types at the tips of the tree, whereas BDMM requires you to fix them. Thus MSBD is more appropriate if the character driving the differences in rates is unobserved or unknown. On the other hand, BDMM integrates more complex dynamics than the current implementation of MSBD: in particular, it includes asymmetrical transition rates as well as mixed birth events (where the two lineages produced by a birth event are of different types), which are not currently available in MSBD.
 
@@ -24,7 +24,7 @@ You may notice similarities between MSBD and the model used in another BEAST2 pa
 
 ### BEAST2 - Bayesian Evolutionary Analysis Sampling Trees 2
 
-BEAST2 is a free software package for Bayesian evolutionary analysis of molecular sequences using MCMC and strictly oriented toward inference using rooted, time-measured phylogenetic trees {% cite Bouckaert2014 --file Tutorial-Template/master-refs.bib %}. This tutorial uses BEAST2 version 2.6.0.
+BEAST2 is a free software package for Bayesian evolutionary analysis of molecular sequences using MCMC and strictly oriented toward inference using rooted, time-measured phylogenetic trees {% cite Bouckaert2014 --file MSBD-tutorial/master-refs.bib %}. This tutorial uses BEAST2 version 2.6.0.
 
 ### BEAUti -- Bayesian Evolutionary Analysis Utility
 
@@ -313,6 +313,6 @@ Going back to the rates log file and using the full posterior distribution rathe
 
 # Relevant References
 
-{% bibliography --cited --file Tutorial-Template/master-refs.bib %}
+{% bibliography --cited --file MSBD-tutorial/master-refs.bib %}
 
 -------
