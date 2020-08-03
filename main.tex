@@ -25,18 +25,18 @@
 \begin{center}
 
 	% Enter the name of your tutorial here
-	\textbf{\LARGE Tutorial using BEAST v2.4.2}\\\vspace{2mm}
+	\textbf{\LARGE Tutorial using BEAST v2.6.0}\\\vspace{2mm}
 
 	% Enter a short description of your tutorial here
-	\textbf{\textcolor{mycol}{\Large Tutorial template}}\\
+	\textbf{\textcolor{mycol}{\Large The MSBD package}}\\
 
 	\vspace{4mm}
 
 	% Enter the names of all the authors here
-	{\Large {\em Author I. Name}}
+	{\Large {\em Joëlle Barido-Sottani}}
 \end{center}
 
-Template for an empty tutorial
+Inferring lineage-dependent birth and death rates
 
 %%%%%%%%%%%%%%%%%
 % Tutorial body %
@@ -44,23 +44,36 @@ Template for an empty tutorial
 
 \section{Background}\label{background}
 
-This is a template tutorial and style guide to help formatting Markdown
-tutorials.
+This tutorial will show how to configure and run a model with
+lineage-dependent birth and death rates, using the BEAST2 package MSBD.
 
-Please start the tutorial by adding some background about the tutorial
-in this section, clearly explaining the question/problem and the type of
-analysis that the methods in the tutorial should be used for. In the
-next section please add a short description of all the programs or
-packages used in the tutorial. The tutorial exercise should follow this
-part. Please add a short explanation on the dataset used in the tutorial
-before starting with the exercise. Please also add a section after the
-exercise interpreting the results. End your tutorial with some useful
-links.
+The MSBD package relies on a multi-type birth death model which is
+composed of a number of evolutionary regimes, also called types or
+states, $ n_* $.
 
-Some of the text in this tutorial template is just dummy filler text.
-Please do not try to understand it.
+Each type is associated with a birth rate $ \lambda_i $ and
+a death rate $ \mu_i $. A lineage in type $ i $
+will change to any another type $ j $ with a uniform rate
+$ m_{i,j} = \frac{\gamma}{n_* - 1} $, where
+$ \gamma $ is the total type change rate. The MSBD package
+is able to infer $ n_* $, $ \gamma $ and
+$ \lambda_i $ and $ \mu_i $ for all types, as
+well as the locations of types and type changes on the tree.
 
-\clearpage
+More details on the model and an evaluation of its performance in
+various conditions can be found in the original publication
+\citep{MSBD2020}.
+
+You may notice similarities between MSBD and the model used in another
+BEAST2 package, BDMM. The main difference is that MSBD is able to infer
+the number of types as well as the types at the tips of the tree,
+whereas BDMM requires you to fix them. Thus MSBD is more appropriate if
+the character driving the differences in rates is unobserved or unknown.
+On the other hand, BDMM integrates more complex dynamics than the
+current implementation of MSBD: in particular, it includes asymmetrical
+transition rates as well as mixed birth events (where the two lineages
+produced by a birth event are of different types), which are not
+currently available in MSBD. \clearpage
 
 \section{Programs used in this
 Exercise}\label{programs-used-in-this-exercise}
@@ -71,305 +84,453 @@ Exercise}\label{programs-used-in-this-exercise}
 BEAST2 is a free software package for Bayesian evolutionary analysis of
 molecular sequences using MCMC and strictly oriented toward inference
 using rooted, time-measured phylogenetic trees \citep{Bouckaert2014}.
-This tutorial uses the BEAST2 version 2.4.2.
+This tutorial uses BEAST2 version 2.6.0.
 
-\clearpage
+\subsubsection{BEAUti -- Bayesian Evolutionary Analysis
+Utility}\label{beauti-bayesian-evolutionary-analysis-utility}
 
-\section{Practical: Exercise title}\label{practical-exercise-title}
+BEAUti is a utility program with a graphical user interface for creating
+BEAST2 input files, which are written in XML. The eXtensible Markup
+Language (XML) is a general-purpose markup language, which allows for
+the combination of text and additional information. The use of the XML
+makes analysis specification very flexible and readable by both the
+program and people. The XML file specifies all the components of the
+analysis, including sequences, node calibrations, models, priors, output
+file names.
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce porta
-augue id vulputate iaculis. Sed non posuere lectus. Integer at magna
-quis nulla tempus cursus. Integer ut nisl elit. Nam pellentesque
-pharetra orci eu facilisis. Nullam vitae leo tempus nunc consequat
-finibus ut ut nisi. Phasellus vitae faucibus dolor, id venenatis lacus.
-Sed eu lacus a nibh luctus semper. Proin non tellus odio. Duis elementum
-lorem eget nisl rhoncus feugiat. In hendrerit vehicula purus. Aliquam
-ornare libero quis tincidunt efficitur. Nam sapien augue, mattis nec
-hendrerit ut, commodo in nisi.
+\subsubsection{TreeAnnotator}\label{treeannotator}
 
-\subsection{This is a subsection}\label{this-is-a-subsection}
+TreeAnnotator is used to summarize the posterior sample of trees to
+produce a maximum clade credibility tree and summarize the posterior
+estimates of other parameters that can be easily visualized on the tree
+(e.g.~node height). This program is also useful for comparing a specific
+tree topology and branching times to the set of trees sampled in the
+MCMC analysis.
 
-Quisque a dictum erat. Curabitur congue sapien sit amet pharetra
-pretium. Proin posuere euismod velit, eget faucibus ex varius id. Fusce
-sodales maximus malesuada. Mauris auctor dui in justo interdum egestas.
-Cras dapibus commodo nulla vitae congue. Vestibulum sit amet justo sit
-amet ex pretium bibendum. Donec ac mollis lorem, vel semper enim.
-Suspendisse sit amet auctor dui. Nullam ac efficitur mauris. Proin
-aliquam tincidunt felis nec semper. Vestibulum vestibulum, eros sit amet
-consectetur blandit, elit dolor posuere sem, a porta purus odio sit amet
-quam. Quisque dapibus erat sem, at vulputate libero dapibus sit amet.
-Mauris rhoncus odio nisl, nec interdum lacus consequat nec. Class aptent
-taciti sociosqu ad litora torquent per conubia nostra, per inceptos
-himenaeos.
+\subsubsection{Tracer}\label{tracer}
 
-Etiam tincidunt porttitor rutrum. Nulla facilisi. Mauris vehicula, justo
-ac ultricies tempus, quam erat hendrerit dui, vel pharetra sapien nibh
-vel ex. Sed molestie eu dui in laoreet. Pellentesque ultrices, orci
-vitae lacinia suscipit, erat sapien elementum ligula, sit amet viverra
-ante lorem eget elit. Cras euismod felis libero, pharetra lobortis arcu
-congue vehicula. Nullam posuere dapibus mauris, eget vulputate ligula
-auctor eget. Aenean et tempus est. Aliquam vehicula arcu vitae metus
-dictum viverra. Aliquam vitae purus mauris. Nullam interdum mauris eget
-sagittis consequat. Quisque in orci elementum, eleifend tortor eget,
-bibendum orci. Etiam aliquet dolor non neque semper fermentum. Praesent
-vitae venenatis mi, ut faucibus ligula. Phasellus vitae lorem neque.
-Interdum et malesuada fames ac ante ipsum primis in faucibus.
+Tracer is used for assessing and summarizing the posterior estimates of
+the various parameters sampled by the Markov Chain. This program can be
+used for visual inspection and assessment of convergence and it also
+calculates 95\% credible intervals (which approximate the 95\% highest
+posterior density intervals) and effective sample sizes (ESS) of
+parameters. Contrary to the other software in this section, Tracer is
+not distributed with BEAST2 and needs to be downloaded separately
+\href{http://beast.community/tracer}{here}. \clearpage
 
-\subsubsection{This is a sub-subsection}\label{this-is-a-sub-subsection}
+\section{Practical: Lineage-specific Birth and Death Rate
+Inference}\label{practical-lineage-specific-birth-and-death-rate-inference}
 
-Etiam posuere urna ut condimentum sagittis. Suspendisse posuere, ex nec
-eleifend fringilla, nisl augue posuere augue, elementum mollis justo
-felis sed purus. Cum sociis natoque penatibus et magnis dis parturient
-montes, nascetur ridiculus mus. Mauris efficitur eros ut turpis
-elementum vestibulum. Sed sit amet nisi at nunc luctus laoreet id ac
-enim. Aliquam elementum risus id urna dictum fringilla. Aenean lobortis,
-risus euismod molestie pulvinar, massa odio pharetra nulla, vitae
-facilisis neque magna sed lorem. Praesent ipsum enim, commodo ut
-pharetra in, sollicitudin ac massa. Donec et interdum mauris. Ut
-molestie, risus quis fermentum placerat, diam risus posuere nisi, eget
-viverra tortor neque ac sem. Donec viverra magna non dolor aliquam, in
-suscipit massa facilisis. Suspendisse congue arcu sed risus consectetur
-commodo. Aenean metus odio, volutpat at tincidunt id, ullamcorper in
-dui. Cum sociis natoque penatibus et magnis dis parturient montes,
-nascetur ridiculus mus. Cras ut sem in odio sodales iaculis non quis
-neque.
+\subsection{Dataset: Hummingbird
+Phylogeny}\label{dataset-hummingbird-phylogeny}
 
-Quisque non mollis massa, nec eleifend dolor. Proin porta elit metus, a
-lobortis enim venenatis ac. Nam scelerisque consectetur mi et gravida.
-Vestibulum placerat, est vitae euismod finibus, purus nisl viverra quam,
-eget condimentum mauris magna vel nisl. Phasellus pretium vitae diam in
-volutpat. Cras gravida non quam ut consectetur. Vivamus congue vulputate
-lorem.
+The dataset used in this tutorial is a time-calibrated phylogeny of 284
+species of hummingbirds, which was estimated by \citep{McGuire2014}.
+This phylogeny was built from an alignment of 436 sequences representing
+six genes (four nuclear and two mitochondrial).
 
-\subsection{This is another
-subsection}\label{this-is-another-subsection}
+In this tutorial, we focus on estimating the MSBD model and its
+parameters, and so we are going to fix this phylogeny in our analysis.
+However, it is also possible to co-estimate both the phylogeny and the
+MSBD model from an alignment in BEAST2.
 
-Praesent sodales est in tempor commodo. Suspendisse nulla metus, gravida
-eget malesuada vel, viverra eu felis. In vitae leo facilisis, ornare
-nunc nec, tempor tortor. Duis pretium mi eros, at consequat neque
-tincidunt eget. Mauris vestibulum venenatis arcu, eget lacinia arcu
-faucibus ut. Phasellus aliquam dui ipsum, a eleifend lacus fermentum at.
-Suspendisse congue orci quis ante consequat ornare. Integer a massa
-blandit, vestibulum eros ut, pulvinar augue. Class aptent taciti
-sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.
+\subsection{Setting up the XML file}\label{setting-up-the-xml-file}
 
-Quisque a urna a massa congue rhoncus. Donec bibendum tempus velit. Nam
-varius augue sit amet lacinia hendrerit. Proin tincidunt massa ut mi
-vestibulum placerat. Phasellus eget dui molestie, aliquet libero
-efficitur, vehicula ex. Pellentesque ultricies ante leo, eu lobortis
-odio convallis id. Donec vitae risus dui. Nulla orci velit, ultricies
-sed finibus quis, blandit quis arcu. Morbi non neque non odio rutrum
-condimentum. Vivamus libero metus, vehicula vitae elit ac, tincidunt
-pretium dui. Proin condimentum fringilla diam, blandit blandit nisl
-dapibus vel. Proin ante felis, accumsan eget ligula et, lobortis dictum
-nunc. Mauris a ante dignissim ipsum tincidunt tristique.
+This section will demonstrate how to create an XML configuration file
+using BEAUti, which will then be used to run the analysis in BEAST2.
 
-\clearpage
+\subsubsection{Package installation}\label{package-installation}
 
-\section{Tutorial style guide}\label{tutorial-style-guide}
-
-\subsection{Text styling}\label{text-styling}
-
-This is how to write \emph{italic text}.
-
-This is how to write \textbf{bold text}.
-
-This is how to write \textbf{\emph{bold and italic text}}.
-
-Do text superscripts like this 7$^{th}$, x$^{2y}$ or x$^{2y + 3z}$.
-
-\subsection{Lists}\label{lists}
-
-\subsubsection{Unnumbered lists}\label{unnumbered-lists}
-
-\begin{itemize}
-
-\item
-  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-\item
-  Integer pharetra arcu ut nisl mollis ultricies.
-
-  \begin{itemize}
-  
-  \item
-    Fusce nec tortor at enim cursus dictum.
-  \item
-    Phasellus nec urna quis velit eleifend convallis sodales nec augue.
-  \end{itemize}
-\item
-  In iaculis turpis in massa facilisis, quis ultricies nibh ultricies.
-\item
-  Nam vitae turpis eu lacus imperdiet mollis id at augue.
-\item
-  Sed sed turpis ac dolor mollis accumsan.
-\end{itemize}
-
-\subsubsection{Numbered lists}\label{numbered-lists}
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-
-\item
-  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-\item
-  Integer pharetra arcu ut nisl mollis ultricies.
-
-  \begin{enumerate}
-  \def\labelenumii{\arabic{enumii}.}
-  
-  \item
-    Fusce nec tortor at enim cursus dictum.
-  \item
-    Phasellus nec urna quis velit eleifend convallis sodales nec augue.
-  \end{enumerate}
-\item
-  In iaculis turpis in massa facilisis, quis ultricies nibh ultricies.
-\item
-  Nam vitae turpis eu lacus imperdiet mollis id at augue.
-\item
-  Sed sed turpis ac dolor mollis accumsan.
-\end{enumerate}
-
-\subsubsection{Mixed lists}\label{mixed-lists}
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-
-\item
-  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-\item
-  Integer pharetra arcu ut nisl mollis ultricies.
-
-  \begin{itemize}
-  
-  \item
-    Fusce nec tortor at enim cursus dictum.
-  \item
-    Phasellus nec urna quis velit eleifend convallis sodales nec augue.
-  \end{itemize}
-\item
-  In iaculis turpis in massa facilisis, quis ultricies nibh ultricies.
-\item
-  Nam vitae turpis eu lacus imperdiet mollis id at augue.
-\item
-  Sed sed turpis ac dolor mollis accumsan.
-\end{enumerate}
-
-\subsection{Figures}\label{figures}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.250000\textwidth]{figures/Logo_bw.png}
-    \caption{This figure is 25\% of the page width.}
-    \label{fig:example1}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.100000\textwidth]{figures/Logo_bw.png}
-    \caption{This figure is only 10\% of the page width.}
-    \label{fig:example2}
-\end{figure}
-
-\section{Code}\label{code}
-
-A bit of inline monospaced font can be made \lstinline!like this!.
-Larger code blocks can be made by using the code environment:
-
-Java:
-
-\begin{lstlisting}[language=Java]
-public class HelloWorld {
-
-    public static void main(String[] args) {
-        // Prints "Hello, World" to the terminal window.
-        System.out.println("Hello, World");
-    }
-
-}
-\end{lstlisting}
-
-XML:
-
-\begin{lstlisting}[language=XML]
-    <BirthDeathSkylineModel spec="BirthDeathSkylineModel" id="birthDeath" tree="@tree" contemp="true">
-          <parameter name="origin" id="origin" value ="100" lower="0."/>    
-          <parameter name="R0" id="R0" value="2" lower="0." dimension ="10"/>
-          <parameter name="becomeUninfectiousRate" id="becomeUninfectiousRate" value="1" lower="0." dimension ="10"/>
-          <parameter name="samplingProportion" id="samplingProportion" value="0."/>
-          <parameter name="rho" id="rho" value="1e-6" lower="0." upper="1."/>
-    </BirthDeathSkylineModel>
-\end{lstlisting}
-
-R:
-
-\begin{lstlisting}[language=R]
-    > myString <- "Hello, World!"
-    > print (myString)
-    [1] "Hello, World!"
-\end{lstlisting}
-
-\section{Equations}\label{equations}
-
-Inline equations: $ \dot{x} = \sigma(y-x) $
-
-Displayed equations:
-
-\begin{equation}
-    \left( \sum_{k=1}^n a_k b_k \right)^2 \leq \left( \sum_{k=1}^n a_k^2 \right) \left( \sum_{k=1}^n b_k^2 \right)
-\end{equation}
-
-\subsection{Instruction boxes}\label{instruction-boxes}
-
-Use block-quotes for step-by-step instruction that the user should
-perform (this will produce a framed box on the website):
+The first step is to install the MSBD package, which will allow us to
+set up and run an analysis with lineage-specific birth and death rates.
 
 \begin{framed}
-The data we have is not the data we want, and the data we need is not
-the data we have.
-
-We can input \textbf{any} formatted text in here:
-
-\begin{itemize}
-
-\item
-  Even
-\item
-  Lists
-\end{itemize}
-
-or equations:
-
-\begin{equation}
-(x_1, \ldots, x_n) \left( \begin{array}{ccc}
-\phi(e_1, e_1) & \cdots & \phi(e_1, e_n) \\
-\vdots & \ddots & \vdots \\
-\phi(e_n, e_1) & \cdots & \phi(e_n, e_n)
-\end{array} \right)
-\left( \begin{array}{c}
-y_1 \\
-\vdots \\
-y_n
-\end{array} \right)
-\end{equation}
+Open the \textbf{BEAST2 Package Manager} by navigating to \textbf{File
+\textgreater{} Manage Packages}. (Figure \ref{packageManage1})
 \end{framed}
 
-\section{Hyperlinks}\label{hyperlinks}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.750000\textwidth]{figures/package_manager.png}
+    \caption{Finding the BEAST2 Package Manager.}
+    \label{packageManage1}
+\end{figure}
 
-Add links to figures like this:
+\begin{framed}
+Install the \textbf{MSBD} package by selecting it and clicking the
+\textbf{Install/Upgrade} button. (Figure \ref{packageManage2})
+\end{framed}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.650000\textwidth]{figures/packageMSBD.png}
+    \caption{The BEAST2 Package Manager.}
+    \label{packageManage2}
+\end{figure}
+
+BEAUti needs to be restarted for the newly installed package to be
+loaded properly.
+
+\begin{framed}
+Close the \textbf{BEAST2 Package Manager} and \textbf{\emph{restart}}
+BEAUti to fully load the \textbf{MSBD} package.
+\end{framed}
+
+\subsubsection{Setting the templates}\label{setting-the-templates}
+
+BEAUti uses templates to define specific model configurations. The MSBD
+template needs to be selected to set up an analysis using the MSBD
+model.
+
+\begin{framed}
+Select the \textbf{MSBD template} by navigating to \textbf{File
+\textgreater{} Template}. (Figure \ref{template})
+\end{framed}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.750000\textwidth]{figures/template.png}
+    \caption{Selecting the MSBD template.}
+    \label{template}
+\end{figure}
+
+\subsubsection{Importing the alignment}\label{importing-the-alignment}
+
+This analysis will be run with a fixed tree topology, however BEAUti
+requires an alignment to be loaded in order to set the other components
+of the model. As a result, we will load a dummy alignment, which is just
+the sequence ``A'' for all taxa.
+
+\begin{framed}
+In the \textbf{Partitions} panel, import the alignment by navigating to
+\textbf{File \textgreater{} Import Alignment} in the menu (Figure
+\ref{importAlignment}) and then finding the \lstinline!hummingbirds.nex!
+file on your computer \textbf{or} simply drag and drop the file into the
+\textbf{BEAUti} window.
+\end{framed}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.750000\textwidth]{figures/alignment.png}
+    \caption{Importing the alignment into BEAUti.}
+    \label{importAlignment}
+\end{figure}
+
+\subsubsection{Importing the tree}\label{importing-the-tree}
+
+As mentioned earlier, we want to run this analysis with a fixed tree
+topology. By default BEAUti generates a random starting tree compatible
+with the alignment, so we need to change this to our fixed tree.
+
+\begin{framed}
+In the \textbf{Tree} panel, set the dropdown to \textbf{Tree From
+Newick}. Copy-paste the Newick tree found in the
+\lstinline!hummingbirds.MCC.tre! file into the \textbf{Newick} field.
+Uncheck the \textbf{Estimate Topology} checkbox.
+\end{framed}
+
+The final tree configuration is shown in Figure \ref{importTree}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.750000\textwidth]{figures/tree.png}
+    \caption{Importing the tree into BEAUti.}
+    \label{importTree}
+\end{figure}
+
+\subsubsection{The parameter priors}\label{the-parameter-priors}
+
+The next step is to look at the parameter priors, in the \textbf{Priors}
+panel. The default priors on the birth rates
+($ \lambda_i $), death rates ($ \mu_i $) and
+total number of types ($ n_* $) are reasonable for this
+dataset so we will not change them.
+
+The expected average number of type changes across the entire tree is
+given by $ n = \gamma \times L $, where L is the total
+length of the tree. The length of the fixed tree used in this analysis
+is $ \approx 1482 $, so the default prior on
+$ \gamma $ would lead to a high expected number of type
+changes. From the previous analysis performed in BAMM, we expect only a
+few type changes across this phylogeny, so we will set the prior on
+$ \gamma $ to a lower range, using a \textbf{LogNormal(-4.0,
+1.0)} distribution.
+
+\begin{framed}
+Click on the arrow next to \textbf{gamma} and change the value for
+\textbf{M} (mean) of the default log normal distribution to \textbf{-4}
+(Figure \ref{gammaPrior}).
+\end{framed}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.750000\textwidth]{figures/gammaprior.png}
+    \caption{Setting the prior on the type change rate.}
+    \label{gammaPrior}
+\end{figure}
+
+\subsubsection{The tree prior}\label{the-tree-prior}
+
+Next, we will specify the tree prior, i.e.~the MSBD model. By default
+most of the parameters of the model are estimated, so it is not
+necessary to change their starting values. However, the extant sampling
+proportion ($ \rho $) and extinct sampling probability
+($ \sigma $) are fixed. There are no extinct samples in this
+dataset, and we have sampled 86\% of the extant hummingbirds species so
+we will set $ \sigma = 0 $ and $ \rho = 0.86 $.
+
+\begin{framed}
+Click on the arrow next to \textbf{Tree} and change the value for
+\textbf{rho} (extant sampling proportion) of the MSBD model to
+\textbf{0.86} (Figure \ref{treePrior}).
+\end{framed}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.750000\textwidth]{figures/treeprior.png}
+    \caption{Setting the MSBD tree prior.}
+    \label{treePrior}
+\end{figure}
+
+Note that many other options are available in this section, such as
+fixing the number of states or the value of some parameters
+(\textbf{estimate} checkboxes), setting the birth rate or the death rate
+to be shared between states (\textbf{identical across states}
+checkboxes), or setting the model to only use sampling-through-time
+(\textbf{To The Present} checkbox) .
+
+\subsubsection{MCMC options}\label{mcmc-options}
+
+The next step is to set the options for running the chain, in the
+\textbf{MCMC} panel. We can see that several loggers are set by default:
 
 \begin{itemize}
 
 \item
-  Figure \ref{fig:example1} is 25\% of the page width.
+  the regular trace log, which in our case only records the posterior,
+  likelihood and prior, as we are not using a substitution or clock
+  model.
 \item
-  Figure \ref{fig:example2} is 10\% of the page width.
+  the screenlog, which shows the advancement of the chain to the screen.
+\item
+  the tree log, which will log the trees in Nexus format, with the birth
+  and death rate on each edge as metadata.
+\item
+  the state change model log, which logs the parameters associated with
+  the model, i.e. $ \gamma $, $ n_* $, the
+  number of sampled states and the birth and death rates for each state
+  ($ \lambda_i $ and $ \mu_i $).
+\item
+  the tip rates log, which logs the birth and death rates at each tip
+  (optionally, at each node if the \textbf{nodeLog} option is
+  activated).
 \end{itemize}
 
-Add links to external URLs like \href{http://www.google.com}{this}.
+These last three logs are specific to MSBD. The only thing we will
+change here is the number of states recorded in the model. By default,
+only the sampled states are recorded, however this results in a log that
+is not in table format and so cannot be easily loaded into Tracer.
+Fixing the number of recorded states solves this problem.
 
-Links to equations or different sections within the same document are a
-little buggy.
+\begin{framed}
+In the \textbf{MCMC} panel, click on the arrow next to
+\textbf{stdStateslog} and click on the \textbf{Edit} button to the right
+of the \textbf{StateChangeModelLogger} (Figure \ref{logs}).
+\end{framed}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.750000\textwidth]{figures/logs.png}
+    \caption{Opening the state change model log.}
+    \label{logs}
+\end{figure}
+
+\begin{framed}
+In the new panel, set the value of \textbf{maxStates} to 10 (Figure
+\ref{logpanel}). Close the panel by clicking on \textbf{OK}.
+\end{framed}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.650000\textwidth]{figures/logstates.png}
+    \caption{Setting the state change model log.}
+    \label{logpanel}
+\end{figure}
+
+Once all the options have been set, the final step is to save the XML.
+
+\begin{framed}
+Save the XML file as \lstinline!hummingbirds.xml! by navigating to
+\textbf{File \textgreater{} Save}.
+\end{framed}
+
+\subsection{Running the analysis in
+BEAST2}\label{running-the-analysis-in-beast2}
+
+\begin{framed}
+Start \textbf{BEAST2} and choose the file \lstinline!hummingbirds.xml!.
+
+If you have \textbf{BEAGLE} installed tick the box to \textbf{Use BEAGLE
+library if available}, which will make the run faster.
+
+Hit \textbf{Run} to start the analysis.
+\end{framed}
+
+The run should take about 15-20 minutes.
+
+\subsection{Analyzing the output}\label{analyzing-the-output}
+
+\subsubsection{Output files}\label{output-files}
+
+Our run has generated 4 different files:
+
+\begin{itemize}
+
+\item
+  \lstinline!hummingbirds.log! which is the general trace log.
+\item
+  \lstinline!hummingbirds.hummingbirds.states.log! which recorded the
+  parameters associated with the state model.
+\item
+  \lstinline!hummingbirds.hummingbirds.rates.log! which recorded the
+  rates on tips of the tree.
+\item
+  \lstinline!hummingbirds.hummingbirds.rates.trees! which recorded the
+  sampled trees in Nexus format.
+\end{itemize}
+
+\subsubsection{Analyzing the log files}\label{analyzing-the-log-files}
+
+We will use the software Tracer to analyze the log files. The general
+trace log is not very interesting in our case, as we used a fixed tree.
+Next, we will look at the MSBD model log, contained in the file
+\lstinline!hummingbirds.hummingbirds.states.log!. Figure \ref{gamma}
+shows the estimated posterior distribution for the type change rate,
+which in this analysis has a median estimate of 5.35E-3, with a 95\% HPD
+of {[}4.04E-4 ; 0.014{]}.
+
+\begin{figure}
+    \centering
+    \includegraphics[max width=\textwidth, max height=0.9\textheight]{figures/tracer_gamma.png}
+    \caption{Estimated posterior distribution of the type change rate, as shown in Tracer.}
+    \label{gamma}
+\end{figure}
+
+One important thing to note is that the estimates of \lstinline!lambda!
+and \lstinline!mu! in this log should not be directly used. This is due
+to the fact that the types in our model are not tied to tips, so they
+may not represent the same evolutionary regimes in all samples. For
+instance, in the presence of two regimes, there may be samples where
+type 0 corresponds to the regime with higher birth, while in other
+samples this regime is represented by type 1. We can see this in Figure
+\ref{lbda}, where the estimate for \lstinline!lambda_0! shows a
+discrepancy around 6.5E7 samples, which corresponds to
+\lstinline!lambda_0! and \lstinline!lambda_1! exchanging values. This
+also means that ESS values for these parameters may be low even if the
+chain has converged.
+
+\begin{figure}
+    \centering
+    \includegraphics[max width=\textwidth, max height=0.9\textheight]{figures/tracer_lambda.png}
+    \caption{Trace of the birth rate for type 0, as shown in Tracer.}
+    \label{lbda}
+\end{figure}
+
+In order to look at the actual birth and death rates estimates, we can
+look at the tip rates log, stored in the file
+\lstinline!hummingbirds.hummingbirds.rates.log!. Figure \ref{tip_uni}
+and Figure \ref{tip_bi} show examples of the estimated posterior
+distributions of the birth rate for two different tips.
+
+\begin{figure}
+    \centering
+    \includegraphics[max width=\textwidth, max height=0.9\textheight]{figures/tracer_tip_unim.png}
+    \caption{Estimated posterior distribution of the birth rate at tip Topaza.pella, as shown in Tracer.}
+    \label{tip_uni}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[max width=\textwidth, max height=0.9\textheight]{figures/tracer_tip_bim.png}
+    \caption{Estimated posterior distribution of the birth rate at tip Amazilia.leucogaster, as shown in Tracer.}
+    \label{tip_bi}
+\end{figure}
+
+We can see that these two tips present two very different
+configurations. The first tip shows a unimodal posterior distribution,
+which indicates that it is confidently assigned to one particular
+evolutionary regime. On the other hand, the second tip presents a
+bimodal distribution, indicating that there are two distinct
+evolutionary regimes, with two distinct birth rates, which it can be
+assigned to. This is important to note because the usual metrics used to
+summarize posterior distributions, i.e.~the median and 95\% HPD
+interval, work well in the first case but can give a misleading
+representation of the posterior in the second case. In this case the
+median estimate for the birth rate of \emph{Amazilia.leucogaster} is
+0.40, which corresponds approximately to the second mode of the
+distribution, however neither the median nor the 95\% HPD interval show
+the existence of a second possible regime, with birth rate
+$ \approx $0.22.
+
+\subsubsection{Analyzing the trees}\label{analyzing-the-trees}
+
+Another way to visualize the results is to look at the rates as plotted
+on the tree. We can use TreeAnnotator to build an MCC tree from the tree
+log in the file \lstinline!hummingbirds.hummingbirds.rates.trees!. Since
+we also logged the birth and death rates for each edge in the tree log,
+these parameters will also be summarized along with the tree.
+
+\begin{framed}
+Start \textbf{TreeAnnotator} and set the input tree to the tree log
+file.
+
+Set the burn-in percentage to 10\%.
+
+Give a name to the output file, for instance
+\lstinline!hummingbirds.MCC.tre!.
+
+Finally, click \textbf{Run} to start the summary.
+\end{framed}
+
+The MCC tree can be loaded into any tree visualization software, such as
+FigTree or IcyTree. We are going to use the R script provided in this
+tutorial \lstinline!plot_MCC.R!. This script takes as input the MCC tree
+file and an output file to store the plot, and it will plot the MCC tree
+with edges coloured by the median estimates of the birth and death
+rates. Run the following commands in an R console to create the plots:
+
+\begin{lstlisting}[language=R]
+source("plot_MCC.R")
+MCC_colour_plot("hummingbirds.MCC.tre", plotfile = "hummingbirds_MCC.pdf")
+\end{lstlisting}
+
+Figure \ref{mcc_birth} and Figure \ref{mcc_death} show the resulting
+plots for the birth rate and the death rate, respectively.
+
+\begin{figure}
+    \centering
+    \includegraphics[max width=\textwidth, max height=0.9\textheight]{figures/mcc_birth.png}
+    \caption{MCC tree with edges coloured by the median birth rate.}
+    \label{mcc_birth}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[max width=\textwidth, max height=0.9\textheight]{figures/mcc_death.png}
+    \caption{MCC tree with edges coloured by the median death rate.}
+    \label{mcc_death}
+\end{figure}
+
+We can see that while most of the tree shares one evolutionary regime
+(in red), some clades are inferred to have evolved under a second regime
+(in green), with higher birth and death rates. From this figure it is
+not possible to tell whether the clades coloured in yellow-orange
+represent a third intermediate regime, or whether there is uncertainty
+as to which of the two regimes they belong to.
+
+Going back to the rates log file and using the full posterior
+distribution rather than just the median, we see that the intermediate
+colour is likely due to uncertainty rather than a third regime.
 
 \clearpage
 
@@ -389,7 +550,6 @@ little buggy.
   \url{http://groups.google.com/group/beast-users}
 \end{itemize}
 
-\clearpage
 
 
 
@@ -399,7 +559,7 @@ little buggy.
 % Please do not change the license
 % Add the author names and relevant links
 % Add any other aknowledgments here
-\href{http://creativecommons.org/licenses/by/4.0/}{\includegraphics[scale=0.8]{figures/ccby.pdf}} This tutorial was written by Author I. Name for \href{https://taming-the-beast.github.io}{Taming the BEAST} and is licensed under a \href{http://creativecommons.org/licenses/by/4.0/}{Creative Commons Attribution 4.0 International License}. 
+\href{http://creativecommons.org/licenses/by/4.0/}{\includegraphics[scale=0.8]{figures/ccby.pdf}} This tutorial was written by Joëlle Barido-Sottani for \href{https://taming-the-beast.github.io}{Taming the BEAST} and is licensed under a \href{http://creativecommons.org/licenses/by/4.0/}{Creative Commons Attribution 4.0 International License}. 
 
 
 %%%%%%%%%%%%%%%%%%%%
@@ -407,9 +567,6 @@ little buggy.
 %%%%%%%%%%%%%%%%%%%%
 Version dated: \today
 
-
-
-\newpage
 
 %%%%%%%%%%%%%%%%
 %  REFERENCES  %
