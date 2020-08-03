@@ -11,10 +11,12 @@ beastversion: 2.6.0
 
 This tutorial will show how to configure and run a model with lineage-dependent birth and death rates, using the BEAST2 package MSBD.
 
-The MSBD package relies on a multi-type birth death model which is composed of a number of evolutionary regimes, also called types or states, {% eqinline n^* %}. Each type is associated with a birth rate {% eqinline \lambda_i %} and a death rate {% eqinline \mu_i %}. A lineages in type {% eqinline i %} will change to any another type {% eqinline j %} with a uniform rate {% eqinline \m_{i,j} = \frac{\gamma}{n^* - 1} %}, where {% eqinline \gamma %} is the total type change rate.
-The MSBD package is able to infer {% eqinline n^* %}, {% eqinline \gamma %} and {% eqinline \lambda_i %} and {% eqinline \mu_i %} for all types, as well as the locations of types and type changes on the tree.
+The MSBD package relies on a multi-type birth death model which is composed of a number of evolutionary regimes, also called types or states, {% eqinline n_* %}.
 
-More details on the model and an evaluation of its performance in various conditions can be found in the original publication {% cite MSBD2020 --file Tutorial-Template/master-refs.bib %}.
+Each type is associated with a birth rate {% eqinline \lambda_i %} and a death rate {% eqinline \mu_i %}. A lineage in type {% eqinline i %} will change to any another type {% eqinline j %} with a uniform rate {% eqinline m_{i,j} = \frac{\gamma}{n_* - 1} %}, where {% eqinline \gamma %} is the total type change rate.
+The MSBD package is able to infer {% eqinline n_* %}, {% eqinline \gamma %} and {% eqinline \lambda_i %} and {% eqinline \mu_i %} for all types, as well as the locations of types and type changes on the tree.
+
+More details on the model and an evaluation of its performance in various conditions can be found in the original publication {% cite MSBD2020 --file MSBD-tutorial/master-refs.bib %}.
 
 You may notice similarities between MSBD and the model used in another BEAST2 package, BDMM. The main difference is that MSBD is able to infer the number of types as well as the types at the tips of the tree, whereas BDMM requires you to fix them. Thus MSBD is more appropriate if the character driving the differences in rates is unobserved or unknown. On the other hand, BDMM integrates more complex dynamics than the current implementation of MSBD: in particular, it includes asymmetrical transition rates as well as mixed birth events (where the two lineages produced by a birth event are of different types), which are not currently available in MSBD.
 
@@ -24,7 +26,7 @@ You may notice similarities between MSBD and the model used in another BEAST2 pa
 
 ### BEAST2 - Bayesian Evolutionary Analysis Sampling Trees 2
 
-BEAST2 is a free software package for Bayesian evolutionary analysis of molecular sequences using MCMC and strictly oriented toward inference using rooted, time-measured phylogenetic trees {% cite Bouckaert2014 --file Tutorial-Template/master-refs.bib %}. This tutorial uses BEAST2 version 2.6.0.
+BEAST2 is a free software package for Bayesian evolutionary analysis of molecular sequences using MCMC and strictly oriented toward inference using rooted, time-measured phylogenetic trees {% cite Bouckaert2014 --file MSBD-tutorial/master-refs.bib %}. This tutorial uses BEAST2 version 2.6.0.
 
 ### BEAUti -- Bayesian Evolutionary Analysis Utility
 
@@ -36,13 +38,13 @@ TreeAnnotator is used to summarize the posterior sample of trees to produce a ma
 
 ### Tracer
 
-Tracer is used for assessing and summarizing the posterior estimates of the various parameters sampled by the Markov Chain. This program can be used for visual inspection and assessment of convergence and it also calculates 95\% credible intervals (which approximate the 95\% highest posterior density intervals) and effective sample sizes (ESS) of parameters. Contrary to the other software in this section, Tracer is not distributed with BEAST2 and needs to be downloaded separately [here](http://beast.community/tracer).
+Tracer is used for assessing and summarizing the posterior estimates of the various parameters sampled by the Markov Chain. This program can be used for visual inspection and assessment of convergence and it also calculates 95% credible intervals (which approximate the 95% highest posterior density intervals) and effective sample sizes (ESS) of parameters. Contrary to the other software in this section, Tracer is not distributed with BEAST2 and needs to be downloaded separately [here](http://beast.community/tracer).
 
 ----
 
-# Practical: lineage-specific birth and death rates inference
+# Practical: Lineage-specific Birth and Death Rate Inference
 
-## Dataset: hummingbirds phylogeny
+## Dataset: Hummingbird Phylogeny
 
 The dataset used in this tutorial is a time-calibrated phylogeny of 284 species of hummingbirds, which was estimated by {% cite McGuire2014 --file MSBD-tutorial/master-refs.bib %}. This phylogeny was built from an alignment of 436 sequences representing six genes (four nuclear and two mitochondrial).
 
@@ -132,11 +134,11 @@ The final tree configuration is shown in [Figure 5](#importTree).
 
 ### The parameter priors
 
-The next step is to look at the parameter priors, in the **Priors** panel. The default priors on the birth rates ({% eqinline \lambda %}), death rates ({% eqinline \mu %}) and total number of types ({% eqinline n* %}) are reasonable for this dataset so we will not change them.
+The next step is to look at the parameter priors, in the **Priors** panel. The default priors on the birth rates ({% eqinline \lambda_i %}), death rates ({% eqinline \mu_i %}) and total number of types ({% eqinline n_* %}) are reasonable for this dataset so we will not change them.
 
 The expected average number of type changes across the entire tree is given by {% eqinline n = \gamma \times L %}, where L is the total length of the tree. The length of the fixed tree used in this analysis is {% eqinline \approx 1482 %}, so the default prior on {% eqinline \gamma %} would lead to a high expected number of type changes. From the previous analysis performed in BAMM, we expect only a few type changes across this phylogeny, so we will set the prior on {% eqinline \gamma %} to a lower range, using a **LogNormal(-4.0, 1.0)** distribution.
 
->  Click on the arrow next to **gamma** and change the value for **M** (mean) of the default log normal distribution to -4 ([Figure 6](#gammaPrior)).
+>  Click on the arrow next to **gamma** and change the value for **M** (mean) of the default log normal distribution to **-4** ([Figure 6](#gammaPrior)).
 > 
 
 <figure>
@@ -150,7 +152,7 @@ The expected average number of type changes across the entire tree is given by {
 
 Next, we will specify the tree prior, i.e. the MSBD model. By default most of the parameters of the model are estimated, so it is not necessary to change their starting values. However, the extant sampling proportion ({% eqinline \rho %}) and extinct sampling probability ({% eqinline \sigma %}) are fixed. There are no extinct samples in this dataset, and we have sampled 86% of the extant hummingbirds species so we will set {% eqinline \sigma = 0 %} and {% eqinline \rho = 0.86 %}.
 
->  Click on the arrow next to **Tree** and change the value for **rho** (extant sampling proportion) of the MSBD model to 0.86 ([Figure 7](#treePrior)).
+>  Click on the arrow next to **Tree** and change the value for **rho** (extant sampling proportion) of the MSBD model to **0.86** ([Figure 7](#treePrior)).
 > 
 
 <figure>
@@ -167,10 +169,10 @@ Note that many other options are available in this section, such as fixing the n
 The next step is to set the options for running the chain, in the **MCMC** panel. We can see that several loggers are set by default:
 
 - the regular trace log, which in our case only records the posterior, likelihood and prior, as we are not using a substitution or clock model.
-- the screenlog, which shows the advancement of the chain to the screen
-- the tree log, which will log the trees in Nexus format, with the birth and death rate on each edge as metadata
-- the state change model log, which logs the parameters associated with the model, i.e. {% eqinline \gamma %}, {% eqinline n^* %}, the number of sampled states and the birth and death rates for each state
-- the tip rates log, which logs the birth and death rates at each tip (optionally, at each node if the **nodeLog** option is activated)
+- the screenlog, which shows the advancement of the chain to the screen.
+- the tree log, which will log the trees in Nexus format, with the birth and death rate on each edge as metadata.
+- the state change model log, which logs the parameters associated with the model, i.e. {% eqinline \gamma %}, {% eqinline n_* %}, the number of sampled states and the birth and death rates for each state ({% eqinline \lambda_i %} and {% eqinline \mu_i %}).
+- the tip rates log, which logs the birth and death rates at each tip (optionally, at each node if the **nodeLog** option is activated).
  
 These last three logs are specific to MSBD. The only thing we will change here is the number of states recorded in the model. By default, only the sampled states are recorded, however this results in a log that is not in table format and so cannot be easily loaded into Tracer. Fixing the number of recorded states solves this problem.
 
@@ -189,7 +191,7 @@ These last three logs are specific to MSBD. The only thing we will change here i
 >
 
 <figure>
-	<a id="logs"></a>
+	<a id="logpanel"></a>
 	<img style="width:65.0%;" src="figures/logstates.png" alt="">
 	<figcaption>Figure 9: Setting the state change model log.</figcaption>
 </figure>
@@ -215,11 +217,12 @@ The run should take about 15-20 minutes.
 
 ### Output files
 
-Our run has generated 4 different files : 
- * `hummingbirds.log` which is the general trace log
- * `hummingbirds.hummingbirds.states.log` which recorded the parameters associated with the state model
- * `hummingbirds.hummingbirds.rates.log` which recorded the rates on tips of the tree
- * `hummingbirds.hummingbirds.rates.trees` which recorded the sampled trees as Nexus
+Our run has generated 4 different files:
+
+* `hummingbirds.log` which is the general trace log.
+* `hummingbirds.hummingbirds.states.log` which recorded the parameters associated with the state model.
+* `hummingbirds.hummingbirds.rates.log` which recorded the rates on tips of the tree.
+* `hummingbirds.hummingbirds.rates.trees` which recorded the sampled trees in Nexus format.
 
 ### Analyzing the log files
 
@@ -227,7 +230,7 @@ We will use the software Tracer to analyze the log files. The general trace log 
 [Figure 10](#gamma) shows the estimated posterior distribution for the type change rate, which in this analysis has a median estimate of 5.35E-3, with a 95% HPD of [4.04E-4 ; 0.014].
 
 <figure>
-	<a id="lbda"></a>
+	<a id="gamma"></a>
 	<img src="figures/tracer_gamma.png" alt="">
 	<figcaption>Figure 10: Estimated posterior distribution of the type change rate, as shown in Tracer.</figcaption>
 </figure>
@@ -313,6 +316,6 @@ Going back to the rates log file and using the full posterior distribution rathe
 
 # Relevant References
 
-{% bibliography --cited --file Tutorial-Template/master-refs.bib %}
+{% bibliography --cited --file MSBD-tutorial/master-refs.bib %}
 
 -------
