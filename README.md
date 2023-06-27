@@ -3,7 +3,7 @@ author: Joëlle Barido-Sottani
 level: Intermediate
 title: The MSBD package
 subtitle: Inferring lineage-dependent birth and death rates
-beastversion: 2.6.0
+beastversion: 2.7.x
 ---
 
 
@@ -26,7 +26,7 @@ You may notice similarities between MSBD and the model used in another BEAST2 pa
 
 ### BEAST2 - Bayesian Evolutionary Analysis Sampling Trees 2
 
-BEAST2 is a free software package for Bayesian evolutionary analysis of molecular sequences using MCMC and strictly oriented toward inference using rooted, time-measured phylogenetic trees {% cite Bouckaert2014 --file MSBD-tutorial/master-refs.bib %}. This tutorial uses BEAST2 version 2.6.0.
+BEAST2 is a free software package for Bayesian evolutionary analysis of molecular sequences using MCMC and strictly oriented toward inference using rooted, time-measured phylogenetic trees {% cite Bouckaert2014 --file MSBD-tutorial/master-refs.bib %}. This tutorial uses BEAST2 version 2.7.4.
 
 ### BEAUti -- Bayesian Evolutionary Analysis Utility
 
