@@ -11,10 +11,10 @@ beastversion: 2.7.x
 
 This tutorial will show how to configure and run a model with lineage-dependent birth and death rates, using the BEAST2 package MSBD.
 
-The MSBD package relies on a multi-type birth death model which is composed of a number of evolutionary regimes, also called types or states, {% eqinline n_* %}.
+The MSBD package relies on a multi-type birth death model which is composed of a number of evolutionary regimes, also called types or states, {% eqinline n^* %}.
 
-Each type is associated with a birth rate {% eqinline \lambda_i %} and a death rate {% eqinline \mu_i %}. A lineage in type {% eqinline i %} will change to any another type {% eqinline j %} with a uniform rate {% eqinline m_{i,j} = \frac{\gamma}{n_* - 1} %}, where {% eqinline \gamma %} is the total type change rate.
-The MSBD package is able to infer {% eqinline n_* %}, {% eqinline \gamma %} and {% eqinline \lambda_i %} and {% eqinline \mu_i %} for all types, as well as the locations of types and type changes on the tree.
+Each type is associated with a birth rate {% eqinline \lambda_i %} and a death rate {% eqinline \mu_i %}. A lineage in type {% eqinline i %} will change to any another type {% eqinline j %} with a uniform rate {% eqinline m_{i,j} = \frac{\gamma}{n^* - 1} %}, where {% eqinline \gamma %} is the total type change rate.
+The MSBD package is able to infer {% eqinline n^* %}, {% eqinline \gamma %} and {% eqinline \lambda_i %} and {% eqinline \mu_i %} for all types, as well as the locations of types and type changes on the tree.
 
 More details on the model and an evaluation of its performance in various conditions can be found in the original publication {% cite MSBD2020 --file MSBD-tutorial/master-refs.bib %}.
 
@@ -134,7 +134,7 @@ The final tree configuration is shown in [Figure 5](#importTree).
 
 ### The parameter priors
 
-The next step is to look at the parameter priors, in the **Priors** panel. The default priors on the birth rates ({% eqinline \lambda_i %}), death rates ({% eqinline \mu_i %}) and total number of types ({% eqinline n_* %}) are reasonable for this dataset so we will not change them.
+The next step is to look at the parameter priors, in the **Priors** panel. The default priors on the birth rates ({% eqinline \lambda_i %}), death rates ({% eqinline \mu_i %}) and total number of types ({% eqinline n^* %}) are reasonable for this dataset so we will not change them.
 
 The expected average number of type changes across the entire tree is given by {% eqinline n = \gamma \times L %}, where L is the total length of the tree. The length of the fixed tree used in this analysis is {% eqinline \approx 1482 %}, so the default prior on {% eqinline \gamma %} would lead to a high expected number of type changes. From the previous analysis performed in BAMM, we expect only a few type changes across this phylogeny, so we will set the prior on {% eqinline \gamma %} to a lower range, using a **LogNormal(-4.0, 1.0)** distribution.
 
@@ -171,7 +171,7 @@ The next step is to set the options for running the chain, in the **MCMC** panel
 - the regular trace log, which in our case only records the posterior, likelihood and prior, as we are not using a substitution or clock model.
 - the screenlog, which shows the advancement of the chain to the screen.
 - the tree log, which will log the trees in Nexus format, with the birth and death rate on each edge as metadata.
-- the state change model log, which logs the parameters associated with the model, i.e. {% eqinline \gamma %}, {% eqinline n_* %}, the number of sampled states and the birth and death rates for each state ({% eqinline \lambda_i %} and {% eqinline \mu_i %}).
+- the state change model log, which logs the parameters associated with the model, i.e. {% eqinline \gamma %}, {% eqinline n^* %}, the number of sampled states and the birth and death rates for each state ({% eqinline \lambda_i %} and {% eqinline \mu_i %}).
 - the tip rates log, which logs the birth and death rates at each tip (optionally, at each node if the **nodeLog** option is activated).
  
 These last three logs are specific to MSBD. The only thing we will change here is the number of states recorded in the model. By default, only the sampled states are recorded, however this results in a log that is not in table format and so cannot be easily loaded into Tracer. Fixing the number of recorded states solves this problem.
