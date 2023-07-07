@@ -120,9 +120,11 @@ def getPandocCall(inputfile, outputfile, template=""):
 	if (template != ""):
 		call.append("--template")
 		call.append(template)
-
+		
 	# Do not parse html blocks
-	call.append("-R")
+	#call.append("-R")
+	call.append("--from") 
+	call.append("markdown+raw_html")
 
 	# Use listings package for code blocks
 	call.append("--listings")
@@ -138,7 +140,7 @@ def getYamlHeader(text):
 
 	match = re.match("(\A---.*?)---",text, re.DOTALL)
 
-	header = yaml.load(match.groups(0)[0])
+	header = yaml.load(match.groups(0)[0], yaml.loader.SafeLoader)
 	if (title != "Untitled tutorial"):
 		header["title"] = title
 
@@ -232,7 +234,7 @@ def parseFigures(text):
 
 			if (tag == "style"):
 				if (content[1:6].lower() == "width" and content[-3:-1] == '%;'):
-					mult  = int(content[content.find(':')+1:content.find('%')])/100
+					mult  = float(content[content.find(':')+1:content.find('%')])/100
 					scale = "[width=%.6f\\textwidth]" % mult
 				else:
 					sys.stdout.write("WARNING Unsupported image style specification %s in '%.20s...'\n" % (part, caption))
