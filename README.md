@@ -268,9 +268,7 @@ This is important to note because the usual metrics used to summarize posterior 
 
 Another way to visualize the results is to look at the rates as plotted on the tree. We can use TreeAnnotator to build an MCC tree from the tree log in the file `hummingbirds.hummingbirds.rates.trees`. Since we also logged the birth and death rates for each edge in the tree log, these parameters will also be summarized along with the tree.
 
-> Start **TreeAnnotator** and set the input tree to the tree log file.
->
-> Set the burn-in percentage to 10%.
+> Start **TreeAnnotator** and set the input tree to the tree file `hummingbirds.hummingbirds.rates.trees`.
 > 
 > Give a name to the output file, for instance `hummingbirds.MCC.tre`.
 >
