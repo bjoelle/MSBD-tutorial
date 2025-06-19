@@ -116,11 +116,15 @@ This analysis will be run with a fixed tree topology, however BEAUti requires an
 
 ### Importing the tree
 
-As mentioned earlier, we want to run this analysis with a fixed tree topology. By default BEAUti generates a random starting tree compatible with the alignment, so we need to change this to our fixed tree.
+As mentioned earlier, we want to run this analysis with a fixed tree topology. First, we need to specify that our tree is fixed and will not be changed during the inference.
 
-> In the **Tree** panel, set the dropdown to **Tree From Newick**.
+> In the **Tree** panel, uncheck the **Estimate Topology** checkbox.
+> 
+
+Then we need to actually provide the tree to use. By default BEAUti generates a random starting tree compatible with the alignment, so we need to change this to our fixed tree.
+
+> In the **Starting Tree** panel, set the dropdown to **Tree From Newick**.
 > Copy-paste the Newick tree found in the `hummingbirds_initial_tree.tre` file into the **Newick** field.
-> Uncheck the **Estimate Topology** checkbox.
 >
 
 The final tree configuration is shown in [Figure 5](#importTree).
